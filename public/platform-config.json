@@ -1,6 +1,6 @@
 {
   "Version": "6.1.0",
-  "Title": "PureAdmin",
+  "Title": "账本管理后台",
   "FixedHeader": true,
   "HiddenSideBar": false,
   "MultiTagsCache": false,

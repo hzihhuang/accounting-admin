@@ -1,6 +1,6 @@
 export default {
   path: "/users",
-  redirect: "/users/index",
+  redirect: "/users/list",
   meta: {
     icon: "solar:user-bold",
     title: "用户管理",
@@ -8,7 +8,7 @@ export default {
   },
   children: [
     {
-      path: "/users/index",
+      path: "/users/list",
       name: "users",
       component: () => import("@/views/users/index.vue"),
       meta: {

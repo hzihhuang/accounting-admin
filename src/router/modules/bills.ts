@@ -1,6 +1,6 @@
 export default {
   path: "/bills",
-  redirect: "/bills/index",
+  redirect: "/bills/list",
   meta: {
     icon: "solar:user-bold",
     title: "账单管理",
@@ -8,7 +8,7 @@ export default {
   },
   children: [
     {
-      path: "/bills/index",
+      path: "/bills/list",
       name: "bills",
       component: () => import("@/views/bills/index.vue"),
       meta: {

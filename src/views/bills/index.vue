@@ -4,13 +4,14 @@ import { useBill } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 
-import Upload from "~icons/ri/upload-line";
-import Password from "~icons/ri/lock-password-line";
-import More from "~icons/ep/more-filled";
 import Delete from "~icons/ep/delete";
 import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
 import AddFill from "~icons/ri/add-circle-line";
+
+import { useFilterTags } from "./utils/useFilterTags";
+import { useFilterTypes } from "./utils/useFilterTypes";
+import dayjs from "dayjs";
 
 defineOptions({
   name: "SystemUser"
@@ -20,6 +21,27 @@ const treeRef = ref();
 const formRef = ref();
 const tableRef = ref();
 
+// 用户昵称
+const nickname = ref("");
+
+// 标签选择
+const { filterTagList, filterTagLoading, handleGetTags, curTag } =
+  useFilterTags();
+
+// 类型选择
+const { filterTypeList, filterTypeLoading, handleGetTypes, curType } =
+  useFilterTypes();
+
+// 金额区间
+const minPrice = ref("");
+const maxPrice = ref("");
+
+// 日期范围
+const date = ref<[Date, Date]>([
+  dayjs().startOf("month").toDate(),
+  dayjs().endOf("month").toDate()
+]);
+
 const {
   form,
   loading,
@@ -27,15 +49,12 @@ const {
   dataList,
   selectedNum,
   pagination,
-  buttonClass,
   deviceDetection,
   onSearch,
   resetForm,
   onbatchDel,
   openDialog,
-  handleUpdate,
   handleDelete,
-  handleReset,
   handleSizeChange,
   onSelectionCancel,
   handleCurrentChange,
@@ -52,58 +71,72 @@ const {
         :model="form"
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
-        <el-form-item label="用户名称：" prop="username">
+        <el-form-item label="用户名称：" prop="nickname">
           <el-input
-            v-model="form.username"
-            placeholder="请输入用户名称"
+            v-model="nickname"
+            placeholder="输入用户名称"
             clearable
             class="w-[180px]!"
           />
         </el-form-item>
         <el-form-item label="标签" prop="tag">
-          <el-input-tag
-            v-model="form.tag"
-            placeholder="请输入标签分类"
-            class="w-[180px]!"
-            clearable
-          />
-          <el-input-tag
-            v-model="form.tag"
+          <el-select
+            v-model="curTag"
+            multiple
+            filterable
             tag-type="primary"
-            tag-effect="dark"
-            placeholder="请输入标签分类"
+            :loading="filterTagLoading"
+            @visible-change="handleGetTags"
           >
-            <template #tag="{ value }">
-              <div class="flex items-center">
-                <span>{{ value }}</span>
-              </div>
-            </template>
-          </el-input-tag>
+            <el-option
+              v-for="item in filterTagList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select
-            v-model="form.type"
-            placeholder="请输入用户名称"
+            v-model="curType"
+            placeholder="选择类型"
             clearable
             class="w-[180px]!"
-          />
+            :loading="filterTypeLoading"
+            @visible-change="handleGetTypes"
+          >
+            <el-option
+              v-for="item in filterTypeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="金额区间" prop="tag">
-          <el-
-            v-model="form.tag"
-            placeholder="请输入用户名称"
+        <el-form-item label="最低价" prop="minPrice">
+          <el-input
+            v-model="minPrice"
+            class="w-40"
+            placeholder="最低价"
             clearable
-            class="w-[180px]!"
+            style="width: 110px"
           />
         </el-form-item>
-        <el-form-item label="时间范围" prop="tag">
+        <el-form-item label="最高价" prop="maxPrice">
+          <el-input
+            v-model="maxPrice"
+            placeholder="最高价"
+            clearable
+            style="width: 110px"
+          />
+        </el-form-item>
+        <el-form-item label="日期范围" prop="date">
           <el-date-picker
-            v-model="form.date"
+            v-model="date"
             type="daterange"
             range-separator="到"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
-            clearable
           />
         </el-form-item>
         <el-form-item>
@@ -128,7 +161,7 @@ const {
             :icon="useRenderIcon(AddFill)"
             @click="openDialog()"
           >
-            新增用户
+            新增账单
           </el-button>
         </template>
         <template v-slot="{ size, dynamicColumns }">
@@ -203,32 +236,6 @@ const {
                   </el-button>
                 </template>
               </el-popconfirm>
-              <el-dropdown>
-                <el-button
-                  class="ml-3! mt-[2px]!"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon(More)"
-                  @click="handleUpdate(row)"
-                />
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item>
-                      <el-button
-                        :class="buttonClass"
-                        link
-                        type="primary"
-                        :size="size"
-                        :icon="useRenderIcon(Password)"
-                        @click="handleReset(row)"
-                      >
-                        重置密码
-                      </el-button>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
             </template>
           </pure-table>
         </template>
@@ -236,3 +243,23 @@ const {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.el-dropdown-menu__item i) {
+  margin: 0;
+}
+
+:deep(.el-button:focus-visible) {
+  outline: none;
+}
+
+.main-content {
+  margin: 24px 24px 0 !important;
+}
+
+.search-form {
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
+}
+</style>

@@ -9,7 +9,7 @@ export default {
   children: [
     {
       path: "/category/list",
-      name: "分类管理",
+      name: "category",
       component: () => import("@/views/category/list.vue"),
       meta: {
         title: "分类管理"

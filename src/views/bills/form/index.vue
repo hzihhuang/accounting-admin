@@ -8,9 +8,6 @@ const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     title: "新增",
     nickname: "",
-    username: "",
-    password: "",
-    status: 1,
     remark: ""
   })
 });
@@ -33,58 +30,51 @@ defineExpose({ getRef });
     label-width="82px"
   >
     <el-row :gutter="30">
-      <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="用户昵称" prop="nickname">
+      <re-col>
+        <el-form-item label="用户ID" prop="nickname">
           <el-input
             v-model="newFormInline.nickname"
             clearable
-            placeholder="请输入用户昵称"
+            placeholder="请输入用户ID"
           />
         </el-form-item>
       </re-col>
-      <re-col :value="12" :xs="24" :sm="24">
-        <el-form-item label="用户名称" prop="username">
+      <re-col>
+        <el-form-item label="标签" prop="nickname">
           <el-input
-            v-model="newFormInline.username"
+            v-model="newFormInline.nickname"
             clearable
-            placeholder="请输入用户名称"
+            placeholder="请输入标签"
           />
         </el-form-item>
       </re-col>
-
-      <re-col
-        v-if="newFormInline.title === '新增'"
-        :value="12"
-        :xs="24"
-        :sm="24"
-      >
-        <el-form-item label="用户密码" prop="password">
+      <re-col>
+        <el-form-item label="类型" prop="nickname">
           <el-input
-            v-model="newFormInline.password"
+            v-model="newFormInline.nickname"
             clearable
-            placeholder="请输入用户密码"
+            placeholder="请输入类型"
           />
         </el-form-item>
       </re-col>
-
-      <re-col
-        v-if="newFormInline.title === '新增'"
-        :value="12"
-        :xs="24"
-        :sm="24"
-      >
-        <el-form-item label="用户状态">
-          <el-switch
-            v-model="newFormInline.status"
-            inline-prompt
-            :active-value="1"
-            :inactive-value="0"
-            active-text="启用"
-            inactive-text="停用"
+      <re-col>
+        <el-form-item label="金额" prop="nickname">
+          <el-input
+            v-model="newFormInline.nickname"
+            clearable
+            placeholder="请输入金额"
           />
         </el-form-item>
       </re-col>
-
+      <re-col>
+        <el-form-item label="日期">
+          <el-date-picker
+            v-model="newFormInline.remark"
+            type="date"
+            placeholder="Pick a day"
+          />
+        </el-form-item>
+      </re-col>
       <re-col>
         <el-form-item label="备注">
           <el-input

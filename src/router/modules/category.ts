@@ -10,7 +10,7 @@ export default {
     {
       path: "/category/list",
       name: "category",
-      component: () => import("@/views/category/list.vue"),
+      component: () => import("@/views/category/index.vue"),
       meta: {
         title: "分类管理"
       }

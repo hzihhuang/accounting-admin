@@ -6,7 +6,7 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemProps } from "./types";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getBillList } from "@/api/bills";
+import { getCategoryList } from "@/api/category";
 import { type Ref, h, ref, toRaw, reactive, onMounted } from "vue";
 
 export function useBill(tableRef: Ref, form) {
@@ -29,41 +29,39 @@ export function useBill(tableRef: Ref, form) {
       reserveSelection: true // 数据刷新后保留选项
     },
     {
-      label: "用户ID",
+      label: "分类ID",
       prop: "id",
       width: 90
     },
     {
-      label: "用户昵称",
-      prop: "nickname",
-      minWidth: 130
+      label: "分类图标",
+      prop: "img",
+      cellRenderer: ({ row }) => (
+        <el-image
+          fit="cover"
+          preview-teleported={true}
+          src={row.img}
+          preview-src-list={Array.of(row.img)}
+          class="w-[24px] h-[24px] align-middle"
+        />
+      ),
+      width: 90
     },
     {
-      label: "标签",
-      prop: "tag",
+      label: "分类名称",
+      prop: "name",
       minWidth: 130
     },
     {
       label: "类型",
       prop: "type",
-      minWidth: 130
-    },
-    {
-      label: "金额",
-      prop: "amount",
-      minWidth: 130
+      minWidth: 130,
+      formatter: ({ type }) => (type === "income" ? "收入" : "支出")
     },
     {
       label: "备注",
-      prop: "remark",
+      prop: "description",
       minWidth: 130
-    },
-    {
-      label: "日期",
-      minWidth: 90,
-      prop: "time",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "创建时间",
@@ -121,7 +119,8 @@ export function useBill(tableRef: Ref, form) {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getBillList(toRaw(form));
+    const { data } = await getCategoryList(toRaw(form));
+    console.log(data);
     dataList.value = data.list;
     pagination.total = data.total;
     pagination.pageSize = data.pageSize;

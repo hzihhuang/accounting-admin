@@ -1,7 +1,5 @@
 interface FormItemProps {
   id?: number;
-  userId?: number;
-  categoryId?: number;
   /** 用于判断是`新增`还是`修改` */
   title: string;
   nickname: string;

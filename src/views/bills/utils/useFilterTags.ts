@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { getTags } from "@/api/global";
+import { getCategoryList } from "@/api/category";
 
 export const useFilterTags = () => {
   const loading = ref(true);
@@ -10,10 +10,10 @@ export const useFilterTags = () => {
       loading.value = false;
       return;
     } else {
-      const apiTags = await getTags();
+      const apiTags = await getCategoryList();
       if (apiTags.data) {
         loading.value = false;
-        tags.value = apiTags.data?.map?.(i => ({
+        tags.value = apiTags.data.list?.map?.(i => ({
           label: i.name,
           value: i.id
         }));

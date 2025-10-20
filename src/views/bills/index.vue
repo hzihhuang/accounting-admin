@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useBill } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
@@ -17,12 +17,8 @@ defineOptions({
   name: "SystemUser"
 });
 
-const treeRef = ref();
 const formRef = ref();
 const tableRef = ref();
-
-// 用户昵称
-const nickname = ref("");
 
 // 标签选择
 const { filterTagList, filterTagLoading, handleGetTags, curTag } =
@@ -32,18 +28,26 @@ const { filterTagList, filterTagLoading, handleGetTags, curTag } =
 const { filterTypeList, filterTypeLoading, handleGetTypes, curType } =
   useFilterTypes();
 
-// 金额区间
-const minPrice = ref("");
-const maxPrice = ref("");
-
-// 日期范围
-const date = ref<[Date, Date]>([
-  dayjs().startOf("month").toDate(),
-  dayjs().endOf("month").toDate()
-]);
+const form = reactive({
+  nickname: "",
+  get tag() {
+    return curTag.value;
+  },
+  set tag(value) {
+    curTag.value = value;
+  },
+  get type() {
+    return curType.value;
+  },
+  set type(value) {
+    curType.value = value;
+  },
+  minPrice: "",
+  maxPrice: "",
+  date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
+});
 
 const {
-  form,
   loading,
   columns,
   dataList,
@@ -59,7 +63,7 @@ const {
   onSelectionCancel,
   handleCurrentChange,
   handleSelectionChange
-} = useBill(tableRef, treeRef);
+} = useBill(tableRef, form);
 </script>
 
 <template>
@@ -73,7 +77,7 @@ const {
       >
         <el-form-item label="用户名称：" prop="nickname">
           <el-input
-            v-model="nickname"
+            v-model="form.nickname"
             placeholder="输入用户名称"
             clearable
             class="w-[180px]!"
@@ -81,7 +85,7 @@ const {
         </el-form-item>
         <el-form-item label="标签" prop="tag">
           <el-select
-            v-model="curTag"
+            v-model="form.tag"
             multiple
             filterable
             tag-type="primary"
@@ -98,7 +102,7 @@ const {
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select
-            v-model="curType"
+            v-model="form.type"
             placeholder="选择类型"
             clearable
             class="w-[180px]!"
@@ -115,7 +119,7 @@ const {
         </el-form-item>
         <el-form-item label="最低价" prop="minPrice">
           <el-input
-            v-model="minPrice"
+            v-model="form.minPrice"
             class="w-40"
             placeholder="最低价"
             clearable
@@ -124,7 +128,7 @@ const {
         </el-form-item>
         <el-form-item label="最高价" prop="maxPrice">
           <el-input
-            v-model="maxPrice"
+            v-model="form.maxPrice"
             placeholder="最高价"
             clearable
             style="width: 110px"
@@ -132,7 +136,7 @@ const {
         </el-form-item>
         <el-form-item label="日期范围" prop="date">
           <el-date-picker
-            v-model="date"
+            v-model="form.date"
             type="daterange"
             range-separator="到"
             start-placeholder="开始时间"

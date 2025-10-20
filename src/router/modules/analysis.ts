@@ -2,7 +2,7 @@ export default {
   path: "/analysis",
   redirect: "/analysis/trend",
   meta: {
-    icon: "hugeicons:analysis-text-link",
+    icon: "bxs:chart",
     title: "统计分析",
     rank: 4
   },
@@ -12,6 +12,7 @@ export default {
       name: "收支统计",
       component: () => import("@/views/analysis/payment.vue"),
       meta: {
+        icon: "gala:chart",
         title: "收支统计"
       }
     },
@@ -20,6 +21,7 @@ export default {
       name: "趋势分析",
       component: () => import("@/views/analysis/trend.vue"),
       meta: {
+        icon: "mynaui:chart-line",
         title: "趋势分析"
       }
     },
@@ -28,6 +30,7 @@ export default {
       name: "分类占比",
       component: () => import("@/views/analysis/category.vue"),
       meta: {
+        icon: "mage:chart-15",
         title: "分类占比"
       }
     }

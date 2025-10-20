@@ -29,7 +29,7 @@ import {
   computed
 } from "vue";
 
-export function useUser(tableRef: Ref, treeRef: Ref) {
+export function useUser(tableRef: Ref) {
   const form = reactive({
     username: "",
     status: ""
@@ -259,7 +259,6 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    treeRef.value.onTreeReset();
     onSearch();
   };
 

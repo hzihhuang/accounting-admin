@@ -16,7 +16,6 @@ defineOptions({
   name: "users"
 });
 
-const treeRef = ref();
 const formRef = ref();
 const tableRef = ref();
 
@@ -41,7 +40,7 @@ const {
   onSelectionCancel,
   handleCurrentChange,
   handleSelectionChange
-} = useUser(tableRef, treeRef);
+} = useUser(tableRef);
 </script>
 
 <template>
@@ -154,7 +153,7 @@ const {
                 修改
               </el-button>
               <el-popconfirm
-                :title="`是否确认删除用户ID为${row.id}的这条数据`"
+                :title="`确认删除「${row.id}」这条数据`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>

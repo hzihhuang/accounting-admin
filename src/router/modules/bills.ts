@@ -2,7 +2,7 @@ export default {
   path: "/bills",
   redirect: "/bills/list",
   meta: {
-    icon: "solar:user-bold",
+    icon: "mingcute:bill-fill",
     title: "账单管理",
     rank: 2
   },

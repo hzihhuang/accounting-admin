@@ -9,8 +9,7 @@ import { getKeyList, deviceDetection } from "@pureadmin/utils";
 import { getBillList } from "@/api/bills";
 import { type Ref, h, ref, toRaw, reactive, onMounted } from "vue";
 
-export function useBill(tableRef: Ref, treeRef: Ref) {
-  const form = reactive({});
+export function useBill(tableRef: Ref, form) {
   const formRef = ref();
   const dataList = ref([]);
   const loading = ref(true);
@@ -137,7 +136,6 @@ export function useBill(tableRef: Ref, treeRef: Ref) {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    treeRef.value.onTreeReset();
     onSearch();
   };
 
@@ -189,7 +187,6 @@ export function useBill(tableRef: Ref, treeRef: Ref) {
   });
 
   return {
-    form,
     loading,
     columns,
     dataList,

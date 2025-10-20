@@ -2,7 +2,7 @@ export default {
   path: "/category",
   redirect: "/category/list",
   meta: {
-    icon: "solar:user-bold",
+    icon: "flowbite:tag-solid",
     title: "分类管理",
     rank: 3
   },

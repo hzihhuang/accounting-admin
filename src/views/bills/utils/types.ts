@@ -2,10 +2,11 @@ interface FormItemProps {
   id?: number;
   userId?: number;
   categoryId?: number;
+  price?: number;
+  date?: string;
+  remark?: string;
   /** 用于判断是`新增`还是`修改` */
   title: string;
-  nickname: string;
-  remark: string;
 }
 interface FormProps {
   formInline: FormItemProps;

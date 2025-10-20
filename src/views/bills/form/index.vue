@@ -3,13 +3,15 @@ import { ref } from "vue";
 import ReCol from "@/components/ReCol";
 import { formRules } from "../utils/rule";
 import { FormProps } from "../utils/types";
+import CategorySelect from "@/components/CategorySelect/index.vue";
 
 const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     title: "新增",
     userId: undefined,
     categoryId: undefined,
-    nickname: "",
+    price: undefined,
+    date: undefined,
     remark: ""
   })
 });
@@ -43,17 +45,13 @@ defineExpose({ getRef });
       </re-col>
       <re-col>
         <el-form-item label="标签" prop="categoryId">
-          <el-input
-            v-model="newFormInline.categoryId"
-            clearable
-            placeholder="请输入标签"
-          />
+          <CategorySelect v-model="newFormInline.categoryId" />
         </el-form-item>
       </re-col>
       <re-col>
-        <el-form-item label="金额" prop="nickname">
+        <el-form-item label="金额" prop="price">
           <el-input
-            v-model="newFormInline.nickname"
+            v-model="newFormInline.price"
             clearable
             placeholder="请输入金额"
           />
@@ -62,7 +60,7 @@ defineExpose({ getRef });
       <re-col>
         <el-form-item label="日期">
           <el-date-picker
-            v-model="newFormInline.remark"
+            v-model="newFormInline.date"
             type="date"
             placeholder="Pick a day"
           />

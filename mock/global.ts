@@ -8,20 +8,25 @@ export default defineFakeRoute([
       const list = [
         {
           id: 1,
-          name: "支出",
-          description: "",
+          name: "expenses",
+          remark: "",
           createTime: 1605456000000
         },
         {
           id: 2,
-          name: "收入",
-          description: "",
+          name: "income",
+          remark: "",
           createTime: 1605456000000
         }
       ];
       return {
         success: true,
-        data: list
+        data: {
+          list,
+          total: list.length, // 总条目数
+          pageSize: 10, // 每页显示条目个数
+          currentPage: 1 // 当前页数
+        }
       };
     }
   }

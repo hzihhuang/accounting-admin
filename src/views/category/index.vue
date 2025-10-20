@@ -3,13 +3,12 @@ import { ref, reactive } from "vue";
 import { useBill } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import TypeSelect from "@/components/TypeSelect/index.vue";
 
 import Delete from "~icons/ep/delete";
 import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
 import AddFill from "~icons/ri/add-circle-line";
-
-import { useFilterTypes } from "./utils/useFilterTypes";
 
 defineOptions({
   name: "SystemUser"
@@ -18,18 +17,9 @@ defineOptions({
 const formRef = ref();
 const tableRef = ref();
 
-// 类型选择
-const { filterTypeList, filterTypeLoading, handleGetTypes, curType } =
-  useFilterTypes();
-
 const form = reactive({
   name: "",
-  get type() {
-    return curType.value;
-  },
-  set type(value) {
-    curType.value = value;
-  }
+  typeId: ""
 });
 
 const {
@@ -68,22 +58,8 @@ const {
             class="w-[180px]!"
           />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select
-            v-model="form.type"
-            placeholder="选择类型"
-            clearable
-            class="w-[180px]!"
-            :loading="filterTypeLoading"
-            @visible-change="handleGetTypes"
-          >
-            <el-option
-              v-for="item in filterTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+        <el-form-item label="类型" prop="typeId">
+          <TypeSelect v-model="form.typeId" />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -100,14 +76,14 @@ const {
         </el-form-item>
       </el-form>
 
-      <PureTableBar title="用户管理" :columns="columns" @refresh="onSearch">
+      <PureTableBar title="分类管理" :columns="columns" @refresh="onSearch">
         <template #buttons>
           <el-button
             type="primary"
             :icon="useRenderIcon(AddFill)"
             @click="openDialog()"
           >
-            新增账单
+            新增分类
           </el-button>
         </template>
         <template v-slot="{ size, dynamicColumns }">

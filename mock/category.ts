@@ -11,7 +11,7 @@ export default defineFakeRoute([
           img: "https://avatars.githubusercontent.com/u/44761321",
           name: "购物",
           type: "expenses",
-          description: "",
+          remark: "",
           createTime: 1605456000000
         },
         {
@@ -19,7 +19,7 @@ export default defineFakeRoute([
           img: "https://avatars.githubusercontent.com/u/44761321",
           name: "交通",
           type: "expenses",
-          description: "",
+          remark: "",
           createTime: 1605456000000
         },
         {
@@ -27,7 +27,7 @@ export default defineFakeRoute([
           img: "https://avatars.githubusercontent.com/u/44761321",
           name: "工资",
           type: "income",
-          description: "",
+          remark: "",
           createTime: 1605456000000
         },
         {
@@ -35,7 +35,7 @@ export default defineFakeRoute([
           img: "https://avatars.githubusercontent.com/u/44761321",
           name: "理财",
           type: "expenses",
-          description: "",
+          remark: "",
           createTime: 1605456000000
         },
         {
@@ -43,7 +43,7 @@ export default defineFakeRoute([
           img: "https://avatars.githubusercontent.com/u/44761321",
           name: "理财",
           type: "income",
-          description: "",
+          remark: "",
           createTime: 1605456000000
         }
       ];

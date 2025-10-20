@@ -3,14 +3,14 @@ import { ref, reactive } from "vue";
 import { useBill } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import CategorySelect from "@/components/CategorySelect/index.vue";
+import TypeSelect from "@/components/TypeSelect/index.vue";
 
 import Delete from "~icons/ep/delete";
 import EditPen from "~icons/ep/edit-pen";
 import Refresh from "~icons/ep/refresh";
 import AddFill from "~icons/ri/add-circle-line";
 
-import { useFilterTags } from "./utils/useFilterTags";
-import { useFilterTypes } from "./utils/useFilterTypes";
 import dayjs from "dayjs";
 
 defineOptions({
@@ -20,28 +20,10 @@ defineOptions({
 const formRef = ref();
 const tableRef = ref();
 
-// 标签选择
-const { filterTagList, filterTagLoading, handleGetTags, curTag } =
-  useFilterTags();
-
-// 类型选择
-const { filterTypeList, filterTypeLoading, handleGetTypes, curType } =
-  useFilterTypes();
-
 const form = reactive({
   nickname: "",
-  get tag() {
-    return curTag.value;
-  },
-  set tag(value) {
-    curTag.value = value;
-  },
-  get type() {
-    return curType.value;
-  },
-  set type(value) {
-    curType.value = value;
-  },
+  categoryId: "",
+  typeId: "",
   minPrice: "",
   maxPrice: "",
   date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
@@ -83,39 +65,11 @@ const {
             class="w-[180px]!"
           />
         </el-form-item>
-        <el-form-item label="标签" prop="tag">
-          <el-select
-            v-model="form.tag"
-            multiple
-            filterable
-            tag-type="primary"
-            :loading="filterTagLoading"
-            @visible-change="handleGetTags"
-          >
-            <el-option
-              v-for="item in filterTagList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+        <el-form-item label="标签" prop="categoryId">
+          <CategorySelect v-model="form.categoryId" />
         </el-form-item>
         <el-form-item label="类型" prop="type">
-          <el-select
-            v-model="form.type"
-            placeholder="选择类型"
-            clearable
-            class="w-[180px]!"
-            :loading="filterTypeLoading"
-            @visible-change="handleGetTypes"
-          >
-            <el-option
-              v-for="item in filterTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <TypeSelect v-model="form.typeId" />
         </el-form-item>
         <el-form-item label="最低价" prop="minPrice">
           <el-input

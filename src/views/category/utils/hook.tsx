@@ -60,7 +60,7 @@ export function useBill(tableRef: Ref, form) {
     },
     {
       label: "备注",
-      prop: "description",
+      prop: "remark",
       minWidth: 130
     },
     {

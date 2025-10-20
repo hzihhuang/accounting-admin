@@ -5,9 +5,11 @@ type Result = {
   data?: {
     /** 列表数据 */
     list: {
-      id?: number;
-      name?: string;
-      description?: string;
+      id: number;
+      name: string;
+      type: "expenses" | "income";
+      remark: string;
+      createTime: number;
     }[];
     /** 总条目数 */
     total?: number;

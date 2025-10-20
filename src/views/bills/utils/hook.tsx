@@ -21,6 +21,7 @@ export function useBill(tableRef: Ref, form) {
     currentPage: 1,
     background: true
   });
+
   const columns: TableColumnList = [
     {
       label: "勾选列", // 如果需要表格多选，此处label必须设置
@@ -39,18 +40,34 @@ export function useBill(tableRef: Ref, form) {
       minWidth: 130
     },
     {
-      label: "标签",
-      prop: "tag",
+      label: "分类图标",
+      prop: "categoryImg",
+      cellRenderer: ({ row }) => (
+        <el-image
+          fit="cover"
+          preview-teleported={true}
+          src={row.category.img}
+          preview-src-list={Array.of(row.category.img)}
+          class="w-[24px] h-[24px] align-middle"
+        />
+      ),
+      width: 90
+    },
+    {
+      label: "分类名称",
+      prop: "category",
+      formatter: ({ category }) => category.name,
       minWidth: 130
     },
     {
       label: "类型",
       prop: "type",
+      formatter: ({ type }) => (type.name === "expenses" ? "支出" : "收入"),
       minWidth: 130
     },
     {
       label: "金额",
-      prop: "amount",
+      prop: "price",
       minWidth: 130
     },
     {
@@ -144,7 +161,6 @@ export function useBill(tableRef: Ref, form) {
       props: {
         formInline: {
           title,
-          nickname: row?.nickname ?? "",
           remark: row?.remark ?? ""
         }
       },

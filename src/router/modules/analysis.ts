@@ -3,32 +3,32 @@ export default {
   redirect: "/analysis/trend",
   meta: {
     icon: "hugeicons:analysis-text-link",
-    title: "财务分析",
-    rank: 3
+    title: "统计分析",
+    rank: 4
   },
   children: [
     {
+      path: "/analysis/payment",
+      name: "收支统计",
+      component: () => import("@/views/analysis/payment.vue"),
+      meta: {
+        title: "收支统计"
+      }
+    },
+    {
       path: "/analysis/trend",
-      name: "收支趋势",
+      name: "趋势分析",
       component: () => import("@/views/analysis/trend.vue"),
       meta: {
-        title: "收支趋势"
+        title: "趋势分析"
       }
     },
     {
-      path: "/analysis/ranking",
-      name: "类别排行",
-      component: () => import("@/views/analysis/ranking.vue"),
+      path: "/analysis/category",
+      name: "分类占比",
+      component: () => import("@/views/analysis/category.vue"),
       meta: {
-        title: "类别排行"
-      }
-    },
-    {
-      path: "/analysis/insight",
-      name: "消费洞察",
-      component: () => import("@/views/analysis/insight.vue"),
-      meta: {
-        title: "消费洞察"
+        title: "分类占比"
       }
     }
   ]

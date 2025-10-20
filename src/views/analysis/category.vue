@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 defineOptions({
-  name: "趋势分析"
+  name: "分类占比"
 });
 </script>
 
 <template>
-  <div>趋势分析（折线图 / 柱状图）</div>
+  <div>分类占比（饼图）</div>
 </template>

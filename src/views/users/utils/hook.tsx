@@ -77,11 +77,6 @@ export function useUser(tableRef: Ref) {
       width: 90
     },
     {
-      label: "用户名称",
-      prop: "username",
-      minWidth: 130
-    },
-    {
       label: "用户昵称",
       prop: "nickname",
       minWidth: 130
@@ -153,7 +148,7 @@ export function useUser(tableRef: Ref) {
       `确认要<strong>${
         row.status === 0 ? "停用" : "启用"
       }</strong><strong style='color:var(--el-color-primary)'>${
-        row.username
+        row.nickname
       }</strong>用户吗?`,
       "系统提示",
       {

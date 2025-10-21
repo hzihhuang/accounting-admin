@@ -188,7 +188,7 @@ const {
                         :icon="useRenderIcon(Upload)"
                         @click="handleUpload(row)"
                       >
-                        上传头像
+                        更新头像
                       </el-button>
                     </el-dropdown-item>
                     <el-dropdown-item>

@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ReCol from "@/components/ReCol";
+import UploadImg from "@/components/UploadImg/index.vue";
+import TypeSelect from "@/components/TypeSelect/index.vue";
 import { formRules } from "../utils/rule";
 import { FormProps } from "../utils/types";
 
-const props = withDefaults(defineProps<FormProps>(), {
-  formInline: () => ({
+const {
+  formInline = {
     title: "新增",
-    nickname: "",
+    file: undefined,
+
+    name: "",
+    typeId: "",
     remark: ""
-  })
-});
+  }
+} = defineProps<FormProps>();
 
 const ruleFormRef = ref();
-const newFormInline = ref(props.formInline);
+const newFormInline = ref(formInline);
 
 function getRef() {
   return ruleFormRef.value;
@@ -31,48 +36,22 @@ defineExpose({ getRef });
   >
     <el-row :gutter="30">
       <re-col>
-        <el-form-item label="用户ID" prop="nickname">
-          <el-input
-            v-model="newFormInline.nickname"
-            clearable
-            placeholder="请输入用户ID"
-          />
+        <el-form-item label="分类图标">
+          <UploadImg v-model="newFormInline.file" />
         </el-form-item>
       </re-col>
       <re-col>
-        <el-form-item label="标签" prop="nickname">
+        <el-form-item label="分类昵称" prop="name">
           <el-input
-            v-model="newFormInline.nickname"
+            v-model="newFormInline.name"
             clearable
             placeholder="请输入标签"
           />
         </el-form-item>
       </re-col>
-      <re-col>
-        <el-form-item label="类型" prop="nickname">
-          <el-input
-            v-model="newFormInline.nickname"
-            clearable
-            placeholder="请输入类型"
-          />
-        </el-form-item>
-      </re-col>
-      <re-col>
-        <el-form-item label="金额" prop="nickname">
-          <el-input
-            v-model="newFormInline.nickname"
-            clearable
-            placeholder="请输入金额"
-          />
-        </el-form-item>
-      </re-col>
-      <re-col>
-        <el-form-item label="日期">
-          <el-date-picker
-            v-model="newFormInline.remark"
-            type="date"
-            placeholder="Pick a day"
-          />
+      <re-col v-if="newFormInline.title === '新增'">
+        <el-form-item label="类型" prop="typeId">
+          <TypeSelect v-model="newFormInline.typeId" />
         </el-form-item>
       </re-col>
       <re-col>

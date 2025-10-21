@@ -5,37 +5,31 @@ export default defineFakeRoute([
   {
     url: "/users",
     method: "post",
-    response: ({ body }) => {
-      let list = [
+    response: ({}) => {
+      const list = [
         {
+          id: 1,
           avatar: "https://avatars.githubusercontent.com/u/44761321",
-          username: "admin",
           nickname: "小铭",
           billsTotal: 30,
           revenueTotal: 2233,
           expenditureTotal: 1000,
-          id: 1,
           status: 1,
           remark: "管理员",
           createTime: 1605456000000
         },
         {
+          id: 2,
           avatar: "https://avatars.githubusercontent.com/u/52823142",
-          username: "common",
           nickname: "小林",
           billsTotal: 50,
           revenueTotal: 5433,
           expenditureTotal: 2000,
-          id: 2,
           status: 1,
           remark: "普通用户",
           createTime: 1605456000000
         }
       ];
-      list = list.filter(item => item.username.includes(body?.username));
-      list = list.filter(item =>
-        String(item.status).includes(String(body?.status))
-      );
       return {
         success: true,
         data: {

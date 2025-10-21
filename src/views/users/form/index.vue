@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ReCol from "@/components/ReCol";
+import UploadImg from "@/components/UploadImg/index.vue";
 import { formRules } from "../utils/rule";
 import { FormProps } from "../utils/types";
 import { usePublicHooks } from "../hooks";
@@ -9,10 +10,10 @@ const props = withDefaults(defineProps<FormProps>(), {
   formInline: () => ({
     title: "新增",
     nickname: "",
-    username: "",
     password: "",
     status: 1,
-    remark: ""
+    remark: "",
+    file: undefined
   })
 });
 
@@ -44,16 +45,6 @@ defineExpose({ getRef });
           />
         </el-form-item>
       </re-col>
-      <re-col>
-        <el-form-item label="用户名称" prop="username">
-          <el-input
-            v-model="newFormInline.username"
-            clearable
-            placeholder="请输入用户名称"
-          />
-        </el-form-item>
-      </re-col>
-
       <re-col
         v-if="newFormInline.title === '新增'"
         :value="12"
@@ -68,13 +59,7 @@ defineExpose({ getRef });
           />
         </el-form-item>
       </re-col>
-
-      <re-col
-        v-if="newFormInline.title === '新增'"
-        :value="12"
-        :xs="24"
-        :sm="24"
-      >
+      <re-col v-if="newFormInline.title === '新增'">
         <el-form-item label="用户状态">
           <el-switch
             v-model="newFormInline.status"
@@ -87,7 +72,11 @@ defineExpose({ getRef });
           />
         </el-form-item>
       </re-col>
-
+      <re-col v-if="newFormInline.title === '新增'">
+        <el-form-item label="头像">
+          <UploadImg v-model="newFormInline.file" />
+        </el-form-item>
+      </re-col>
       <re-col>
         <el-form-item label="备注">
           <el-input

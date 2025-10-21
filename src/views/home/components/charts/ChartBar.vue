@@ -41,7 +41,7 @@ watch(
         right: 0
       },
       legend: {
-        data: ["需求人数", "提问数量"],
+        data: ["开支", "收入"],
         textStyle: {
           color: "#606266",
           fontSize: "0.875rem"

@@ -10,7 +10,7 @@ import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
 
 defineOptions({
-  name: "Welcome"
+  name: "Home"
 });
 
 const { isDark } = useDark();

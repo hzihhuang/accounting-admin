@@ -31,8 +31,8 @@ import {
 
 export function useUser(tableRef: Ref) {
   const form = reactive({
-    username: "",
-    status: ""
+    status: "",
+    nickname: ""
   });
   const formRef = ref();
   const ruleFormRef = ref();
@@ -264,7 +264,6 @@ export function useUser(tableRef: Ref) {
         formInline: {
           title,
           nickname: row?.nickname ?? "",
-          username: row?.username ?? "",
           password: row?.password ?? "",
           status: row?.status ?? 1,
           remark: row?.remark ?? ""
@@ -280,7 +279,7 @@ export function useUser(tableRef: Ref) {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
         function chores() {
-          message(`您${title}了用户名称为${curData.username}的这条数据`, {
+          message(`您${title}了用户名称为${curData.nickname}的这条数据`, {
             type: "success"
           });
           done(); // 关闭弹框
@@ -336,7 +335,7 @@ export function useUser(tableRef: Ref) {
   /** 重置密码 */
   function handleReset(row) {
     addDialog({
-      title: `重置 ${row.username} 用户的密码`,
+      title: `重置 ${row.nickname} 用户的密码`,
       width: "30%",
       draggable: true,
       closeOnClickModal: false,
@@ -394,7 +393,7 @@ export function useUser(tableRef: Ref) {
         ruleFormRef.value.validate(valid => {
           if (valid) {
             // 表单规则校验通过
-            message(`已成功重置 ${row.username} 用户的密码`, {
+            message(`已成功重置 ${row.nickname} 用户的密码`, {
               type: "success"
             });
             console.log(pwdForm.newPwd);

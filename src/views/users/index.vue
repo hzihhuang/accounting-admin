@@ -52,9 +52,9 @@ const {
         :model="form"
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
-        <el-form-item label="用户名称：" prop="username">
+        <el-form-item label="用户名称：" prop="nickname">
           <el-input
-            v-model="form.username"
+            v-model="form.nickname"
             placeholder="请输入用户名称"
             clearable
             class="w-[180px]!"

@@ -79,13 +79,7 @@ const optionsBasis: Array<OptionsType> = [
               />
               <p class="font-medium text-green-500">{{ item.percent }}</p>
             </div>
-            <ChartLine
-              v-if="item.data.length > 1"
-              class="w-1/2!"
-              :color="item.color"
-              :data="item.data"
-            />
-            <ChartRound v-else class="w-1/2!" />
+            <ChartLine class="w-1/2!" :color="item.color" :data="item.data" />
           </div>
         </el-card>
       </re-col>
@@ -138,29 +132,33 @@ const optionsBasis: Array<OptionsType> = [
           }
         }"
       >
-        <el-card shadow="never">
+        <el-card class="h-full" shadow="never">
           <div class="flex justify-between">
-            <span class="text-md font-medium">排行</span>
+            <span class="text-md font-medium">分类排行</span>
           </div>
           <div
             v-for="(item, index) in progressData"
             :key="index"
             :class="[
               'flex',
-              'justify-between',
-              'items-start',
-              index === 0 ? 'mt-8' : 'mt-[2.15rem]'
+              'items-center',
+              index === 0 ? 'mt-8' : 'mt-[1.25rem]'
             ]"
           >
-            <el-progress
-              :text-inside="true"
-              :percentage="item.percentage"
-              :stroke-width="21"
-              :color="item.color"
-              striped
-              striped-flow
-              :duration="item.duration"
-            />
+            <div
+              class="h-5 text-xs"
+              :style="{
+                width: item.percentage + '%',
+                backgroundColor: item.color,
+                borderRadius: '100px'
+              }"
+            >
+              <div
+                class="w-full h-full flex items-center justify-center opacity-0 cursor-pointer hover:opacity-100 transition-all duration-300"
+              >
+                {{ item.percentage }}
+              </div>
+            </div>
             <span class="text-nowrap ml-2 text-text_color_regular text-sm">
               {{ item.week }}
             </span>

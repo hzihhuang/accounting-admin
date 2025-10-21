@@ -1,8 +1,8 @@
 import { dayjs, cloneDeep, getRandomIntBetween } from "./utils";
 import GroupLine from "~icons/ri/group-line";
-import Question from "~icons/ri/question-answer-line";
-import CheckLine from "~icons/ri/chat-check-line";
-import Smile from "~icons/ri/star-smile-line";
+import Bills from "~icons/mingcute/bill-line";
+import Tags from "~icons/mdi/tag-outline";
+import NewBill from "~icons/fluent/clock-bill-24-regular";
 
 const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
@@ -19,7 +19,7 @@ const chartData = [
     data: [2101, 5288, 4239, 4962, 6752, 5208, 7450] // 平滑折线图数据
   },
   {
-    icon: Question,
+    icon: Bills,
     bgColor: "#fff5f4",
     color: "#e85f33",
     duration: 1600,
@@ -29,7 +29,7 @@ const chartData = [
     data: [2216, 1148, 1255, 788, 4821, 1973, 4379]
   },
   {
-    icon: CheckLine,
+    icon: Tags,
     bgColor: "#eff8f4",
     color: "#26ce83",
     duration: 1500,
@@ -39,14 +39,14 @@ const chartData = [
     data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
   },
   {
-    icon: Smile,
+    icon: NewBill,
     bgColor: "#f6f4fe",
     color: "#7846e5",
     duration: 100,
-    name: "今日新增",
+    name: "今日新增账单",
     value: 100,
     percent: "+100%",
-    data: [100]
+    data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
   }
 ];
 
@@ -65,48 +65,46 @@ const barChartData = [
 /** 解决概率 */
 const progressData = [
   {
-    week: "周一",
-    percentage: 85,
-    duration: 110,
+    week: "交通",
+    percentage: 20,
     color: "#41b6ff"
   },
   {
-    week: "周二",
-    percentage: 86,
-    duration: 105,
+    week: "餐饮",
+    percentage: 15,
     color: "#41b6ff"
   },
   {
-    week: "周三",
-    percentage: 88,
-    duration: 100,
+    week: "购物",
+    percentage: 32,
     color: "#41b6ff"
   },
   {
-    week: "周四",
-    percentage: 89,
-    duration: 95,
+    week: "旅行",
+    percentage: 2,
     color: "#41b6ff"
   },
   {
-    week: "周五",
-    percentage: 94,
-    duration: 90,
+    week: "住房",
+    percentage: 15,
     color: "#26ce83"
   },
   {
-    week: "周六",
-    percentage: 96,
-    duration: 85,
+    week: "宠物",
+    percentage: 2,
     color: "#26ce83"
   },
   {
-    week: "周日",
-    percentage: 100,
-    duration: 80,
+    week: "礼物",
+    percentage: 3,
+    color: "#26ce83"
+  },
+  {
+    week: "长辈",
+    percentage: 30,
     color: "#26ce83"
   }
-].reverse();
+].sort((a, b) => b.percentage - a.percentage);
 
 /** 数据统计 */
 const tableData = Array.from({ length: 30 }).map((_, index) => {

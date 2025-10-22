@@ -65,13 +65,13 @@ const {
             class="w-[180px]!"
           />
         </el-form-item>
-        <el-form-item label="标签" prop="categoryId">
+        <el-form-item label="标签：" prop="categoryId">
           <CategorySelect v-model="form.categoryId" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
+        <el-form-item label="类型：" prop="type">
           <TypeSelect v-model="form.typeId" />
         </el-form-item>
-        <el-form-item label="最低价" prop="minPrice">
+        <el-form-item label="最低价：" prop="minPrice">
           <el-input
             v-model="form.minPrice"
             class="w-40"
@@ -80,7 +80,7 @@ const {
             style="width: 110px"
           />
         </el-form-item>
-        <el-form-item label="最高价" prop="maxPrice">
+        <el-form-item label="最高价：" prop="maxPrice">
           <el-input
             v-model="form.maxPrice"
             placeholder="最高价"
@@ -88,7 +88,7 @@ const {
             style="width: 110px"
           />
         </el-form-item>
-        <el-form-item label="日期范围" prop="date">
+        <el-form-item label="日期范围：" prop="date">
           <el-date-picker
             v-model="form.date"
             type="daterange"

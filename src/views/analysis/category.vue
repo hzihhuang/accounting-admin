@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import GroupLine from "~icons/ri/group-line";
-import Bills from "~icons/mingcute/bill-line";
-import Tags from "~icons/mdi/tag-outline";
-import NewBill from "~icons/fluent/clock-bill-24-regular";
-import { useDark } from "@pureadmin/utils";
 import ReCol from "@/components/ReCol";
 import ChartPie from "./charts/ChartPie.vue";
+import { reactive, ref } from "vue";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import dayjs from "dayjs";
+
+import Refresh from "~icons/ep/refresh";
 
 defineOptions({
   name: "分类占比"
 });
 
-const { isDark } = useDark();
 const chartData = [
   {
     title: "开支占比",
@@ -35,11 +34,46 @@ const chartData = [
     ]
   }
 ];
+
+const formRef = ref();
+const form = reactive({
+  date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
+});
+const onSearch = () => {};
+const resetForm = () => {};
 </script>
 
 <template>
   <div>
-    <el-row :gutter="24" justify="space-around">
+    <el-form
+      ref="formRef"
+      :inline="true"
+      :model="form"
+      class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
+    >
+      <el-form-item label="日期范围: " prop="date">
+        <el-date-picker
+          v-model="form.date"
+          type="daterange"
+          range-separator="到"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          :icon="useRenderIcon('ri/search-line')"
+          @click="onSearch"
+        >
+          搜索
+        </el-button>
+        <el-button :icon="useRenderIcon(Refresh)" @click="resetForm(formRef)">
+          重置
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <el-row class="mt-4" :gutter="24" justify="space-around">
       <re-col
         v-for="(item, index) in chartData"
         :key="index"
@@ -57,7 +91,7 @@ const chartData = [
           opacity: 1,
           y: 0,
           transition: {
-            delay: 80 * (index + 1)
+            delay: 80 * (index + 1) + 80
           }
         }"
       >
@@ -96,7 +130,13 @@ const chartData = [
   }
 }
 
+.search-form {
+  :deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
+}
+
 .main-content {
-  margin: 20px 20px 0 !important;
+  margin: 24px 24px 0 !important;
 }
 </style>

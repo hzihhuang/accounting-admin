@@ -58,7 +58,7 @@ const {
             class="w-[180px]!"
           />
         </el-form-item>
-        <el-form-item label="类型" prop="typeId">
+        <el-form-item label="类型：" prop="typeId">
           <TypeSelect v-model="form.typeId" />
         </el-form-item>
         <el-form-item>

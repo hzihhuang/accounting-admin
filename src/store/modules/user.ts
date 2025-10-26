@@ -19,20 +19,15 @@ import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
 export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
     // 头像
-    avatar: storageLocal().getItem<DataInfo<number>>(userKey)?.avatar ?? "",
+    avatar: storageLocal().getItem<DataInfo>(userKey)?.user?.avatarUrl ?? "",
     // 用户名
-    username: storageLocal().getItem<DataInfo<number>>(userKey)?.username ?? "",
+    username: storageLocal().getItem<DataInfo>(userKey)?.user?.username ?? "",
     // 昵称
-    nickname: storageLocal().getItem<DataInfo<number>>(userKey)?.nickname ?? "",
+    nickname: storageLocal().getItem<DataInfo>(userKey)?.user?.nickname ?? "",
     // 页面级别权限
-    roles: storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [],
+    roles: storageLocal().getItem<DataInfo>(userKey)?.roles ?? [],
     // 按钮级别权限
-    permissions:
-      storageLocal().getItem<DataInfo<number>>(userKey)?.permissions ?? [],
-    // 是否勾选了登录页的免登录
-    isRemembered: false,
-    // 登录页的免登录存储几天，默认7天
-    loginDay: 7
+    permissions: storageLocal().getItem<DataInfo>(userKey)?.permissions ?? []
   }),
   actions: {
     /** 存储头像 */
@@ -55,20 +50,14 @@ export const useUserStore = defineStore("pure-user", {
     SET_PERMS(permissions: Array<string>) {
       this.permissions = permissions;
     },
-    /** 存储是否勾选了登录页的免登录 */
-    SET_ISREMEMBERED(bool: boolean) {
-      this.isRemembered = bool;
-    },
-    /** 设置登录页的免登录存储几天 */
-    SET_LOGINDAY(value: number) {
-      this.loginDay = Number(value);
-    },
     /** 登入 */
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data?.success) setToken(data.data);
+            if (data?.success) {
+              setToken(data.data);
+            }
             resolve(data);
           })
           .catch(error => {

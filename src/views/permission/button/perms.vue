@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { hasPerms } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
-
 const { permissions } = useUserStoreHook();
+console.log(permissions);
 
 defineOptions({
   name: "PermissionButtonLogin"

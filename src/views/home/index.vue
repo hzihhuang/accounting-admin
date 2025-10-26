@@ -9,6 +9,10 @@ import { ChartBar, ChartLine } from "./components/charts";
 import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
 
+import { useUserStoreHook } from "@/store/modules/user";
+const { permissions } = useUserStoreHook();
+console.log(permissions);
+
 defineOptions({
   name: "Home"
 });

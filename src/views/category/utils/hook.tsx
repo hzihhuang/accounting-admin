@@ -6,10 +6,16 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemProps } from "./types";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getCategoryList } from "@/api/category";
+import {
+  getCategoryList,
+  deleteCategory,
+  deleteCategoryList,
+  addCategory
+} from "@/api/category";
+import { uploadImage } from "@/api/upload";
 import { type Ref, h, ref, toRaw, reactive, onMounted } from "vue";
 
-export function useBill(tableRef: Ref, form) {
+export function useTags(tableRef: Ref, form) {
   const formRef = ref();
   const dataList = ref([]);
   const loading = ref(true);
@@ -79,16 +85,20 @@ export function useBill(tableRef: Ref, form) {
   ];
 
   function handleDelete(row) {
-    message(`您删除了用户ID为${row.id}的这条数据`, { type: "success" });
-    onSearch();
+    deleteCategory(row.id).then(() => {
+      message(`删除「${row.name}」成功`, { type: "success" });
+      onSearch();
+    });
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    form.pageSize = val;
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    form.page = val;
+    onSearch();
   }
 
   /** 当CheckBox选择项发生变化时会触发该事件 */
@@ -109,18 +119,18 @@ export function useBill(tableRef: Ref, form) {
   function onbatchDel() {
     // 返回当前选中的行
     const curSelected = tableRef.value.getTableRef().getSelectionRows();
-    // 接下来根据实际业务，通过选中行的某项数据，比如下面的id，调用接口进行批量删除
-    message(`已删除用户ID为 ${getKeyList(curSelected, "id")} 的数据`, {
-      type: "success"
+    deleteCategoryList(getKeyList(curSelected, "id")).then(() => {
+      message(`删除成功 「${getKeyList(curSelected, "name")}」 的数据`, {
+        type: "success"
+      });
+      tableRef.value.getTableRef().clearSelection();
+      onSearch();
     });
-    tableRef.value.getTableRef().clearSelection();
-    onSearch();
   }
 
   async function onSearch() {
     loading.value = true;
     const { data } = await getCategoryList(toRaw(form));
-    console.log(data);
     dataList.value = data.list;
     pagination.total = data.total;
     pagination.pageSize = data.pageSize;
@@ -143,7 +153,11 @@ export function useBill(tableRef: Ref, form) {
       props: {
         formInline: {
           title,
-          nickname: row?.nickname ?? "",
+          file: row?.img ?? "",
+          img:
+            row?.img ??
+            "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+          name: row?.name ?? "",
           remark: row?.remark ?? ""
         }
       },
@@ -156,23 +170,30 @@ export function useBill(tableRef: Ref, form) {
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
-        function chores() {
-          message(`aaasds`, {
-            type: "success"
-          });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }
-        FormRef.validate(valid => {
+        FormRef.validate(async valid => {
           if (valid) {
-            console.log("curData", curData);
-            // 表单规则校验通过
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              // 1、上传图标
+              const uploadRes = await uploadImage(curData.file, {
+                folder: "category"
+              });
+              if (uploadRes.code !== 200) return;
+              const data = {
+                img: uploadRes.data.url,
+                name: curData.name,
+                type: curData.type,
+                remark: curData.remark
+              };
+              // 2、增加标签
+              const res = await addCategory(data);
+              if (res.code !== 200) return;
+              message(`${title}「${res.data.name}}」成功`, {
+                type: "success"
+              });
+              done(); // 关闭弹框
+              onSearch(); // 刷新表格数据
             } else {
-              // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              // 修改
             }
           }
         });

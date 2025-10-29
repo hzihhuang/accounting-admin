@@ -9,10 +9,11 @@ import { FormProps } from "../utils/types";
 const {
   formInline = {
     title: "新增",
-    file: undefined,
+    img: "",
 
+    file: undefined,
     name: "",
-    typeId: "",
+    type: "",
     remark: ""
   }
 } = defineProps<FormProps>();
@@ -36,26 +37,26 @@ defineExpose({ getRef });
   >
     <el-row :gutter="30">
       <re-col>
-        <el-form-item label="分类图标">
-          <UploadImg v-model="newFormInline.file" />
+        <el-form-item label="分类图标" prop="file">
+          <UploadImg v-model="newFormInline.file" :url="newFormInline.img" />
         </el-form-item>
       </re-col>
       <re-col>
-        <el-form-item label="分类昵称" prop="name">
+        <el-form-item label="分类名称" prop="name">
           <el-input
             v-model="newFormInline.name"
             clearable
-            placeholder="请输入标签"
+            placeholder="请输入分类名称"
           />
         </el-form-item>
       </re-col>
       <re-col v-if="newFormInline.title === '新增'">
-        <el-form-item label="类型" prop="typeId">
-          <TypeSelect v-model="newFormInline.typeId" />
+        <el-form-item label="类型" prop="type">
+          <TypeSelect v-model="newFormInline.type" hideAll />
         </el-form-item>
       </re-col>
       <re-col>
-        <el-form-item label="备注">
+        <el-form-item label="备注" prop="remark">
           <el-input
             v-model="newFormInline.remark"
             placeholder="请输入备注信息"

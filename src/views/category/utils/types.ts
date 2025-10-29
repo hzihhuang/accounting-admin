@@ -1,9 +1,11 @@
 interface FormItemProps {
-  title: string;
-  file?: File;
   /** 用于判断是`新增`还是`修改` */
+  title: string;
+  img: string;
+
+  file?: File;
   name: string;
-  typeId: string;
+  type: "expense" | "income";
   remark: string;
 }
 interface FormProps {

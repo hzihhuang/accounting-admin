@@ -1,12 +1,31 @@
 <script lang="ts" setup>
-import { useType } from "./useType";
+import { ref } from "vue";
 
-// 组件名称
 defineOptions({
   name: "TypeSelect"
 });
+const { hideAll = false } = defineProps<{
+  hideAll?: boolean;
+}>();
 
-const { typeList, loading, handleGetTypeList } = useType();
+const typeList = [
+  ...(hideAll
+    ? []
+    : [
+        {
+          value: "all",
+          label: "全部"
+        }
+      ]),
+  {
+    value: "expense",
+    label: "支出"
+  },
+  {
+    value: "income",
+    label: "收入"
+  }
+];
 const model = defineModel();
 </script>
 
@@ -16,8 +35,6 @@ const model = defineModel();
     placeholder="选择类型"
     clearable
     class="w-[180px]!"
-    :loading="loading"
-    @visible-change="handleGetTypeList"
   >
     <el-option
       v-for="item in typeList"

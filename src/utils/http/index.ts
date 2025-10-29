@@ -20,7 +20,6 @@ const defaultConfig: AxiosRequestConfig = {
   timeout: 10000,
   headers: {
     Accept: "application/json, text/plain, */*",
-    "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest"
   },
   // 数组格式参数序列化（https://github.com/axios/axios/issues/5142）
@@ -127,10 +126,25 @@ class PureHttp {
     param?: AxiosRequestConfig,
     axiosConfig?: PureHttpRequestConfig
   ): Promise<T> {
+    // 手动拼接 params 到 URL
+    let finalUrl = url;
+    if (param?.params && method.toLowerCase() === "get") {
+      // 创建新的对象，只包含有效值
+      const validParams: any = {};
+      for (const [key, value] of Object.entries(param.params)) {
+        if (value != null && value !== "") {
+          validParams[key] = value;
+        }
+      }
+      if (Object.keys(validParams).length > 0) {
+        const queryString = new URLSearchParams(validParams).toString();
+        finalUrl = `${url}${url.includes("?") ? "&" : "?"}${queryString}`;
+      }
+    }
     const config = {
       method,
-      url,
-      ...param,
+      url: finalUrl,
+      data: param?.data,
       ...axiosConfig
     } as PureHttpRequestConfig;
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
-import { useBill } from "./utils/hook";
+import { useTags } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import TypeSelect from "@/components/TypeSelect/index.vue";
@@ -18,8 +18,10 @@ const formRef = ref();
 const tableRef = ref();
 
 const form = reactive({
-  name: "",
-  typeId: ""
+  page: 1,
+  pageSize: 10,
+  keyword: "",
+  type: "all"
 });
 
 const {
@@ -38,7 +40,7 @@ const {
   onSelectionCancel,
   handleCurrentChange,
   handleSelectionChange
-} = useBill(tableRef, form);
+} = useTags(tableRef, form);
 </script>
 
 <template>
@@ -50,16 +52,16 @@ const {
         :model="form"
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
-        <el-form-item label="类别名称：" prop="name">
+        <el-form-item label="类别名称：" prop="keyword">
           <el-input
-            v-model="form.name"
+            v-model="form.keyword"
             placeholder="输入分类名称"
             clearable
             class="w-[180px]!"
           />
         </el-form-item>
-        <el-form-item label="类型：" prop="typeId">
-          <TypeSelect v-model="form.typeId" />
+        <el-form-item label="类型：" prop="type">
+          <TypeSelect v-model="form.type" />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -143,7 +145,7 @@ const {
                 修改
               </el-button>
               <el-popconfirm
-                :title="`是否确认删除用户ID为${row.id}的这条数据`"
+                :title="`确认删除「${row.name}」吗?`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>

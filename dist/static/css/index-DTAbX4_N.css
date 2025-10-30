@@ -1,0 +1,81 @@
+.wave[data-v-a485103a] {
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  width: 80%;
+  z-index: -1;
+}
+.login-container[data-v-a485103a] {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  height: 100vh;
+  max-width: 100%;
+  width: 100vw;
+  grid-gap: 18rem;
+  padding: 0 2rem;
+}
+.img[data-v-a485103a] {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+.img img[data-v-a485103a] {
+  width: 500px;
+}
+.login-box[data-v-a485103a] {
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  text-align: center;
+}
+.login-form[data-v-a485103a] {
+  width: 360px;
+}
+.avatar[data-v-a485103a] {
+  height: 80px;
+  width: 350px;
+}
+.login-form h2[data-v-a485103a] {
+  color: #999;
+  font:
+    700 200% Consolas,
+    Monaco,
+    monospace;
+  margin: 15px 0;
+  text-transform: uppercase;
+}
+@media screen and (max-width: 1180px) {
+  .login-container[data-v-a485103a] {
+    grid-gap: 9rem;
+  }
+  .login-form[data-v-a485103a] {
+    width: 290px;
+  }
+  .login-form h2[data-v-a485103a] {
+    font-size: 2.4rem;
+    margin: 8px 0;
+  }
+  .img img[data-v-a485103a] {
+    width: 360px;
+  }
+  .avatar[data-v-a485103a] {
+    height: 80px;
+    width: 280px;
+  }
+}
+@media screen and (max-width: 968px) {
+  .img[data-v-a485103a],
+  .wave[data-v-a485103a] {
+    display: none;
+  }
+  .login-container[data-v-a485103a] {
+    grid-template-columns: 1fr;
+  }
+  .login-box[data-v-a485103a] {
+    justify-content: center;
+  }
+}
+[data-v-a485103a] .el-input-group__append {
+  padding: 0;
+}

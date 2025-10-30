@@ -1,0 +1,12 @@
+[data-v-cad2610b] .el-dropdown-menu__item i {
+  margin: 0;
+}
+[data-v-cad2610b] .el-button:focus-visible {
+  outline: none;
+}
+.main-content[data-v-cad2610b] {
+  margin: 24px 24px 0 !important;
+}
+.search-form[data-v-cad2610b] .el-form-item {
+  margin-bottom: 12px;
+}

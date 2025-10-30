@@ -3,6 +3,7 @@ interface FormItemProps {
   title: string;
   img: string;
 
+  id: number;
   file?: File;
   name: string;
   type: "expense" | "income";

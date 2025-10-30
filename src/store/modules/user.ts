@@ -19,7 +19,7 @@ import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
 export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
     // 头像
-    avatar: storageLocal().getItem<DataInfo>(userKey)?.user?.avatarUrl ?? "",
+    avatar: storageLocal().getItem<DataInfo>(userKey)?.user?.avatar ?? "",
     // 用户名
     username: storageLocal().getItem<DataInfo>(userKey)?.user?.username ?? "",
     // 昵称

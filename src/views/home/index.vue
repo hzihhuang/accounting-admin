@@ -8,10 +8,12 @@ import { useRenderFlicker } from "@/components/ReFlicker";
 import { ChartBar, ChartLine } from "./components/charts";
 import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { chartData, barChartData, progressData, latestNewsData } from "./data";
+import { userKey } from "@/utils/auth";
 
 import { useUserStoreHook } from "@/store/modules/user";
-const { permissions } = useUserStoreHook();
-console.log(permissions);
+import { storageLocal } from "@pureadmin/utils";
+const { nickname } = useUserStoreHook();
+console.log(storageLocal().getItem(userKey));
 
 defineOptions({
   name: "Home"

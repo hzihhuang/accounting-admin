@@ -10,7 +10,8 @@ import {
   getCategoryList,
   deleteCategory,
   deleteCategoryList,
-  addCategory
+  addCategory,
+  updateCategory
 } from "@/api/category";
 import { uploadImage } from "@/api/upload";
 import { type Ref, h, ref, toRaw, reactive, onMounted } from "vue";
@@ -190,11 +191,29 @@ export function useTags(tableRef: Ref, form) {
               message(`${title}「${res.data.name}}」成功`, {
                 type: "success"
               });
-              done(); // 关闭弹框
-              onSearch(); // 刷新表格数据
             } else {
-              // 修改
+              let img = curData.file as unknown as string;
+              if (typeof img !== "string") {
+                // 修改了图标，需要重新上传。
+                const { data } = await uploadImage(curData.file, {
+                  folder: "category"
+                });
+                img = data.url;
+              }
+              const data = {
+                img,
+                name: curData.name,
+                remark: curData.remark
+              };
+              const res = await updateCategory(row.id, data);
+              if (res.code !== 200) return;
+              message(`${title}「${res.data.name}}」成功`, {
+                type: "success"
+              });
             }
+
+            done(); // 关闭弹框
+            onSearch(); // 刷新表格数据
           }
         });
       }

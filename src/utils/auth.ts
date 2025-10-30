@@ -53,16 +53,14 @@ export function setToken(data: DataInfo) {
   Cookies.set(TokenKey, cookieString);
   Cookies.set(multipleTabsKey, "true");
 
-  function setUserKey({ avatar, username, nickname, roles, permissions }) {
-    useUserStoreHook().SET_AVATAR(avatar);
-    useUserStoreHook().SET_USERNAME(username);
-    useUserStoreHook().SET_NICKNAME(nickname);
+  function setUserKey({ user, roles, permissions }) {
+    useUserStoreHook().SET_AVATAR(user.avatarUrl);
+    useUserStoreHook().SET_USERNAME(user.username);
+    useUserStoreHook().SET_NICKNAME(user.nickname);
     useUserStoreHook().SET_ROLES(roles);
     useUserStoreHook().SET_PERMS(permissions);
     storageLocal().setItem(userKey, {
-      avatar,
-      username,
-      nickname,
+      user,
       roles,
       permissions
     });
@@ -71,9 +69,11 @@ export function setToken(data: DataInfo) {
   if (data?.user && data.roles) {
     const { user, roles } = data;
     setUserKey({
-      avatar: user?.avatarUrl ?? "",
-      username: user?.username ?? "",
-      nickname: user?.nickname ?? "",
+      user: {
+        avatar: user?.avatarUrl ?? "",
+        username: user?.username ?? "",
+        nickname: user?.nickname ?? ""
+      },
       roles,
       permissions: data?.permissions ?? []
     });

@@ -26,7 +26,7 @@ export const uploadImage = (file: File, options?: UploadOptions) => {
     formData.append("folder", options.folder);
   }
 
-  return http.request<UploadResult>("post", "/upload/image", {
+  return http.request<UploadResult>("post", "admin/upload/image", {
     data: formData
   });
 };

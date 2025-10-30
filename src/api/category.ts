@@ -18,7 +18,19 @@ export const addCategory = (data: {
   type: "expense" | "income";
   remark?: string;
 }) => {
-  return http.request<addResult>("post", "/web/tags", { data });
+  return http.request<addResult>("post", "/admin/category", { data });
+};
+
+/** 修改分类 */
+export const updateCategory = (
+  id: number,
+  data: {
+    img: string;
+    name: string;
+    remark?: string;
+  }
+) => {
+  return http.request<addResult>("put", `/admin/category/${id}`, { data });
 };
 
 type Result = BaseResult<{
@@ -40,17 +52,17 @@ type Result = BaseResult<{
 
 /** 获取分类 */
 export const getCategoryList = (params?: object) => {
-  return http.request<Result>("get", "/web/tags", { params });
+  return http.request<Result>("get", "/admin/category", { params });
 };
 
 /** 删除单个分类 */
 export const deleteCategory = (id: number) => {
-  return http.request<Result>("delete", `/web/tags/${id}`);
+  return http.request<Result>("delete", `/admin/category/${id}`);
 };
 
 /** 删除多个分类 */
 export const deleteCategoryList = (ids: number[]) => {
-  return http.request<Result>("post", `/web/tags/batch`, {
+  return http.request<Result>("post", `/admin/category/batch`, {
     data: {
       ids
     }

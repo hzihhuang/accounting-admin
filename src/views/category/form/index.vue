@@ -46,6 +46,7 @@ defineExpose({ getRef });
           <el-input
             v-model="newFormInline.name"
             clearable
+            maxlength="8"
             placeholder="请输入分类名称"
           />
         </el-form-item>
@@ -61,6 +62,7 @@ defineExpose({ getRef });
             v-model="newFormInline.remark"
             placeholder="请输入备注信息"
             type="textarea"
+            maxlength="50"
           />
         </el-form-item>
       </re-col>

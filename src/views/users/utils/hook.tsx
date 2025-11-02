@@ -18,21 +18,16 @@ import {
   ElProgress,
   ElMessageBox
 } from "element-plus";
-import {
-  type Ref,
-  h,
-  ref,
-  toRaw,
-  watch,
-  reactive,
-  onMounted,
-  computed
-} from "vue";
+import { type Ref, h, ref, watch, reactive, onMounted, computed } from "vue";
+import { addWebUser, deleteWebUser, updateWebUserStatus } from "@/api/webUser";
 
 export function useUser(tableRef: Ref) {
   const form = reactive({
+    keyword: "",
     status: "",
-    nickname: ""
+    page: 1,
+    pageSize: 10,
+    date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
   });
   const formRef = ref();
   const ruleFormRef = ref();
@@ -83,17 +78,17 @@ export function useUser(tableRef: Ref) {
     },
     {
       label: "账单数量",
-      prop: "billsTotal",
+      prop: "totalBills",
       minWidth: 130
     },
     {
       label: "总收入",
-      prop: "revenueTotal",
+      prop: "totalIncome",
       minWidth: 130
     },
     {
       label: "总支出",
-      prop: "expenditureTotal",
+      prop: "totalExpense",
       minWidth: 130
     },
     {
@@ -118,14 +113,14 @@ export function useUser(tableRef: Ref) {
     {
       label: "创建时间",
       minWidth: 90,
-      prop: "createTime",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "createdAt",
+      formatter: ({ createdAt }) =>
+        dayjs(createdAt).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
       fixed: "right",
-      width: 180,
+      width: 280,
       slot: "operation"
     }
   ];
@@ -159,26 +154,17 @@ export function useUser(tableRef: Ref) {
         draggable: true
       }
     )
-      .then(() => {
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
-          {
-            loading: true
-          }
-        );
-        setTimeout(() => {
-          switchLoadMap.value[index] = Object.assign(
-            {},
-            switchLoadMap.value[index],
-            {
-              loading: false
-            }
-          );
+      .then(async () => {
+        switchLoadMap.value[index] = { loading: true };
+        const res = await updateWebUserStatus(row.id, row.status);
+        if (res.code === 200) {
+          switchLoadMap.value[index] = {
+            loading: false
+          };
           message("已成功修改用户状态", {
             type: "success"
           });
-        }, 300);
+        }
       })
       .catch(() => {
         row.status === 0 ? (row.status = 1) : (row.status = 0);
@@ -196,16 +182,20 @@ export function useUser(tableRef: Ref) {
   });
 
   function handleDelete(row) {
-    message(`您删除了用户ID为${row.id}的这条数据`, { type: "success" });
-    onSearch();
+    deleteWebUser(row.id).then(() => {
+      message(`您删除了用户${row.username}`, { type: "success" });
+      onSearch();
+    });
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    form.pageSize = val;
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    form.page = val;
+    onSearch();
   }
 
   /** 当CheckBox选择项发生变化时会触发该事件 */
@@ -240,7 +230,18 @@ export function useUser(tableRef: Ref) {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getUserList(toRaw(form));
+    const params = {
+      ...form,
+      needSummary: true,
+      startDate: form.date?.[0]
+        ? dayjs(form.date[0]).format("YYYY-MM-DD")
+        : undefined,
+      endDate: form.date?.[1]
+        ? dayjs(form.date[1]).format("YYYY-MM-DD")
+        : undefined
+    };
+    delete params.date;
+    const { data } = await getUserList(params);
     dataList.value = data.list;
     pagination.total = data.total;
     pagination.pageSize = data.pageSize;
@@ -263,10 +264,8 @@ export function useUser(tableRef: Ref) {
       props: {
         formInline: {
           title,
-          nickname: row?.nickname ?? "",
-          password: row?.password ?? "",
-          status: row?.status ?? 1,
-          remark: row?.remark ?? ""
+          username: row?.username ?? "",
+          password: row?.password ?? ""
         }
       },
       width: "46%",
@@ -278,23 +277,22 @@ export function useUser(tableRef: Ref) {
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
-        function chores() {
-          message(`您${title}了用户名称为${curData.nickname}的这条数据`, {
-            type: "success"
-          });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }
-        FormRef.validate(valid => {
+        FormRef.validate(async valid => {
           if (valid) {
-            console.log("curData", curData);
             // 表单规则校验通过
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              chores();
-            } else {
-              // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              const res = await addWebUser({
+                username: curData.username,
+                password: curData.password,
+                avatar: curData.img
+              });
+              if (res.success) {
+                message(`您${title}了用户「${curData.username}」`, {
+                  type: "success"
+                });
+                done(); // 关闭弹框
+                onSearch(); // 刷新表格数据
+              }
             }
           }
         });

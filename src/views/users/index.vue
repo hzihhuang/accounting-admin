@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useUser } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import WebUserSelect from "@/components/WebUserSelect/index.vue";
 
 import Upload from "~icons/ri/upload-line";
 import Password from "~icons/ri/lock-password-line";
@@ -52,13 +53,8 @@ const {
         :model="form"
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
-        <el-form-item label="用户名称：" prop="nickname">
-          <el-input
-            v-model="form.nickname"
-            placeholder="请输入用户名称"
-            clearable
-            class="w-[180px]!"
-          />
+        <el-form-item label="用户名称：" prop="keyword">
+          <WebUserSelect v-model="form.keyword" class="w-[180px]!" multiple />
         </el-form-item>
         <el-form-item label="状态：" prop="status">
           <el-select
@@ -67,9 +63,18 @@ const {
             clearable
             class="w-[180px]!"
           >
-            <el-option label="已开启" value="1" />
-            <el-option label="已关闭" value="0" />
+            <el-option label="已启用" value="1" />
+            <el-option label="已停用" value="0" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="日期范围：" prop="date">
+          <el-date-picker
+            v-model="form.date"
+            type="daterange"
+            range-separator="到"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -147,13 +152,23 @@ const {
                 link
                 type="primary"
                 :size="size"
-                :icon="useRenderIcon(EditPen)"
-                @click="openDialog('修改', row)"
+                :icon="useRenderIcon(Upload)"
+                @click="handleUpload(row)"
               >
-                修改
+                更新头像
+              </el-button>
+              <el-button
+                class="reset-margin"
+                link
+                type="primary"
+                :size="size"
+                :icon="useRenderIcon(Password)"
+                @click="handleReset(row)"
+              >
+                重置密码
               </el-button>
               <el-popconfirm
-                :title="`确认删除「${row.id}」这条数据`"
+                :title="`确认删除用户「${row.nickname ?? row.username}」?`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>
@@ -168,44 +183,6 @@ const {
                   </el-button>
                 </template>
               </el-popconfirm>
-              <el-dropdown>
-                <el-button
-                  class="ml-3! mt-[2px]!"
-                  link
-                  type="primary"
-                  :size="size"
-                  :icon="useRenderIcon(More)"
-                  @click="handleUpdate(row)"
-                />
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item>
-                      <el-button
-                        :class="buttonClass"
-                        link
-                        type="primary"
-                        :size="size"
-                        :icon="useRenderIcon(Upload)"
-                        @click="handleUpload(row)"
-                      >
-                        更新头像
-                      </el-button>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                      <el-button
-                        :class="buttonClass"
-                        link
-                        type="primary"
-                        :size="size"
-                        :icon="useRenderIcon(Password)"
-                        @click="handleReset(row)"
-                      >
-                        重置密码
-                      </el-button>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
             </template>
           </pure-table>
         </template>

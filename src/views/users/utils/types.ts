@@ -1,11 +1,11 @@
 interface FormItemProps {
   id?: number;
   /** 用于判断是`新增`还是`修改` */
+  img: string;
   title: string;
-  nickname: string;
+
+  username: string;
   password: string;
-  status: number;
-  remark: string;
   file?: File;
 }
 interface FormProps {

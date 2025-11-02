@@ -8,7 +8,6 @@ const model = defineModel();
 <template>
   <el-select
     v-model="model"
-    multiple
     filterable
     tag-type="primary"
     :loading="loading"

@@ -1,7 +1,19 @@
 interface FormItemProps {
   id?: number;
-  userId?: number;
-  categoryId?: number;
+  user?: {
+    id: number;
+    username: string;
+    nickname: string;
+    email: string;
+    avatar: string;
+    status: 1 | 0;
+  };
+  category?: {
+    id: number;
+    name: string;
+    img: string;
+    type: "expense" | "income";
+  };
   price?: number;
   date?: string;
   remark?: string;

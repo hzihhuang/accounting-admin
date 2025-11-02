@@ -6,8 +6,8 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemProps } from "./types";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getBillList } from "@/api/bills";
-import { type Ref, h, ref, toRaw, reactive, onMounted } from "vue";
+import { addBill, deleteBill, getBillList, updateBill } from "@/api/bills";
+import { type Ref, h, ref, reactive, onMounted } from "vue";
 
 export function useBill(tableRef: Ref, form) {
   const formRef = ref();
@@ -30,14 +30,15 @@ export function useBill(tableRef: Ref, form) {
       reserveSelection: true // 数据刷新后保留选项
     },
     {
-      label: "用户ID",
+      label: "账单ID",
       prop: "id",
       width: 90
     },
     {
       label: "用户昵称",
       prop: "nickname",
-      minWidth: 130
+      minWidth: 130,
+      formatter: ({ user }) => user.nickname || user.username
     },
     {
       label: "分类图标",
@@ -46,8 +47,8 @@ export function useBill(tableRef: Ref, form) {
         <el-image
           fit="cover"
           preview-teleported={true}
-          src={row.category.img}
-          preview-src-list={Array.of(row.category.img)}
+          src={row?.category?.img}
+          preview-src-list={Array.of(row?.category?.img)}
           class="w-[24px] h-[24px] align-middle"
         />
       ),
@@ -56,13 +57,13 @@ export function useBill(tableRef: Ref, form) {
     {
       label: "分类名称",
       prop: "category",
-      formatter: ({ category }) => category.name,
+      formatter: ({ category }) => category?.name ?? "分类已删除",
       minWidth: 130
     },
     {
       label: "类型",
       prop: "type",
-      formatter: ({ type }) => (type.name === "expenses" ? "支出" : "收入"),
+      formatter: ({ type }) => (type === "expense" ? "支出" : "收入"),
       minWidth: 130
     },
     {
@@ -78,16 +79,17 @@ export function useBill(tableRef: Ref, form) {
     {
       label: "日期",
       minWidth: 90,
-      prop: "time",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "date",
+      formatter: ({ date }) => {
+        return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+      }
     },
     {
       label: "创建时间",
       minWidth: 90,
-      prop: "createTime",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "createdAt",
+      formatter: ({ createdAt }) =>
+        dayjs(createdAt).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
@@ -98,16 +100,20 @@ export function useBill(tableRef: Ref, form) {
   ];
 
   function handleDelete(row) {
-    message(`您删除了用户ID为${row.id}的这条数据`, { type: "success" });
-    onSearch();
+    deleteBill(row.id).then(() => {
+      message(`删除「${row.id}」成功`, { type: "success" });
+      onSearch();
+    });
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    form.pageSize = val;
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    form.page = val;
+    onSearch();
   }
 
   /** 当CheckBox选择项发生变化时会触发该事件 */
@@ -138,15 +144,27 @@ export function useBill(tableRef: Ref, form) {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getBillList(toRaw(form));
-    dataList.value = data.list;
-    pagination.total = data.total;
-    pagination.pageSize = data.pageSize;
-    pagination.currentPage = data.currentPage;
-
-    setTimeout(() => {
+    const params = {
+      ...form,
+      startDate: form.date?.[0]
+        ? dayjs(form.date[0]).format("YYYY-MM-DD")
+        : undefined,
+      endDate: form.date?.[1]
+        ? dayjs(form.date[1]).format("YYYY-MM-DD")
+        : undefined
+    };
+    delete params.date;
+    try {
+      const { data } = await getBillList(params);
+      dataList.value = data.list;
+      pagination.total = data.total;
+      pagination.pageSize = data.pageSize;
+      pagination.currentPage = data.currentPage;
       loading.value = false;
-    }, 500);
+    } catch (error) {
+      console.log(error);
+      loading.value = false;
+    }
   }
 
   const resetForm = formEl => {
@@ -161,6 +179,13 @@ export function useBill(tableRef: Ref, form) {
       props: {
         formInline: {
           title,
+
+          userId: row?.user?.id,
+          nickname: row?.user?.nickname,
+          categoryId: row?.category?.id,
+          categoryName: row?.category?.name,
+          price: row?.price,
+          date: row?.date ?? dayjs().format("YYYY-MM-DD"),
           remark: row?.remark ?? ""
         }
       },
@@ -172,25 +197,34 @@ export function useBill(tableRef: Ref, form) {
       contentRenderer: () => h(editForm, { ref: formRef, formInline: null }),
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
-        const curData = options.props.formInline as FormItemProps;
-        function chores() {
-          message(`aaasds`, {
-            type: "success"
-          });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        }
-        FormRef.validate(valid => {
+        const curData = options.props.formInline as any;
+        FormRef.validate(async valid => {
           if (valid) {
-            console.log("curData", curData);
-            // 表单规则校验通过
+            const data = {
+              userId: curData.userId,
+              categoryId: curData.categoryId,
+              price: curData.price,
+              date: curData.date,
+              remark: curData.remark
+            };
+
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              const res = await addBill(data);
+              if (res.success) {
+                message(`新增成功`, {
+                  type: "success"
+                });
+              }
             } else {
-              // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              const res = await updateBill(row.id, data);
+              if (res.success) {
+                message(`修改成功`, {
+                  type: "success"
+                });
+              }
             }
+            done(); // 关闭弹框
+            onSearch(); // 刷新表格数据
           }
         });
       }

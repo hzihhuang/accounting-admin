@@ -5,6 +5,7 @@ import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import CategorySelect from "@/components/CategorySelect/index.vue";
 import TypeSelect from "@/components/TypeSelect/index.vue";
+import WebUserSelect from "@/components/WebUserSelect/index.vue";
 
 import Delete from "~icons/ep/delete";
 import EditPen from "~icons/ep/edit-pen";
@@ -21,12 +22,16 @@ const formRef = ref();
 const tableRef = ref();
 
 const form = reactive({
-  nickname: "",
-  categoryId: "",
-  typeId: "",
-  minPrice: "",
-  maxPrice: "",
-  date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
+  page: 1,
+  pageSize: 10,
+  type: undefined,
+  keyword: undefined,
+  categoryIds: [],
+  minPrice: undefined,
+  maxPrice: undefined,
+  date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()],
+  sortBy: "date",
+  sortOrder: "DESC"
 });
 
 const {
@@ -57,19 +62,14 @@ const {
         :model="form"
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
-        <el-form-item label="用户名称：" prop="nickname">
-          <el-input
-            v-model="form.nickname"
-            placeholder="输入用户名称"
-            clearable
-            class="w-[180px]!"
-          />
+        <el-form-item label="用户名称：" prop="keyword">
+          <WebUserSelect v-model="form.keyword" class="w-[180px]!" multiple />
         </el-form-item>
-        <el-form-item label="标签：" prop="categoryId">
-          <CategorySelect v-model="form.categoryId" />
+        <el-form-item label="标签：" prop="categoryIds">
+          <CategorySelect v-model="form.categoryIds" multiple />
         </el-form-item>
         <el-form-item label="类型：" prop="type">
-          <TypeSelect v-model="form.typeId" />
+          <TypeSelect v-model="form.type" />
         </el-form-item>
         <el-form-item label="最低价：" prop="minPrice">
           <el-input
@@ -179,7 +179,7 @@ const {
                 修改
               </el-button>
               <el-popconfirm
-                :title="`是否确认删除用户ID为${row.id}的这条数据`"
+                :title="`确认删除「${row.id}」吗?`"
                 @confirm="handleDelete(row)"
               >
                 <template #reference>

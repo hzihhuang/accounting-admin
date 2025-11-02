@@ -4,20 +4,30 @@ import ReCol from "@/components/ReCol";
 import { formRules } from "../utils/rule";
 import { FormProps } from "../utils/types";
 import CategorySelect from "@/components/CategorySelect/index.vue";
+import WebUserSelect from "@/components/WebUserSelect/index.vue";
 
-const props = withDefaults(defineProps<FormProps>(), {
-  formInline: () => ({
+const {
+  formInline = {
     title: "新增",
+
     userId: undefined,
     categoryId: undefined,
     price: undefined,
     date: undefined,
     remark: ""
-  })
-});
+  }
+} = defineProps<{
+  formInline?: {
+    userId: number;
+    categoryId: number;
+    price: number;
+    date: string;
+    remark: string;
+  };
+}>();
 
 const ruleFormRef = ref();
-const newFormInline = ref(props.formInline);
+const newFormInline = ref(formInline);
 
 function getRef() {
   return ruleFormRef.value;
@@ -35,12 +45,8 @@ defineExpose({ getRef });
   >
     <el-row :gutter="30">
       <re-col>
-        <el-form-item label="用户ID" prop="userId">
-          <el-input
-            v-model="newFormInline.userId"
-            clearable
-            placeholder="请输入用户ID"
-          />
+        <el-form-item label="用户昵称" prop="userId">
+          <WebUserSelect v-model="newFormInline.userId" />
         </el-form-item>
       </re-col>
       <re-col>
@@ -53,16 +59,20 @@ defineExpose({ getRef });
           <el-input
             v-model="newFormInline.price"
             clearable
+            type="number"
+            min="0"
             placeholder="请输入金额"
+            oninput="value = value.replace(/[^0-9.]/g, '')"
           />
         </el-form-item>
       </re-col>
       <re-col>
-        <el-form-item label="日期">
+        <el-form-item label="日期" prop="date">
           <el-date-picker
             v-model="newFormInline.date"
             type="date"
-            placeholder="Pick a day"
+            placeholder="消费日期"
+            value-format="YYYY-MM-DD"
           />
         </el-form-item>
       </re-col>

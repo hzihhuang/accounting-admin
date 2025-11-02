@@ -4,6 +4,7 @@ import { useTags } from "./utils/hook";
 import { PureTableBar } from "@/components/RePureTableBar";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import TypeSelect from "@/components/TypeSelect/index.vue";
+import CategorySelect from "@/components/CategorySelect/index.vue";
 
 import Delete from "~icons/ep/delete";
 import EditPen from "~icons/ep/edit-pen";
@@ -53,12 +54,7 @@ const {
         class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
       >
         <el-form-item label="类别名称：" prop="keyword">
-          <el-input
-            v-model="form.keyword"
-            placeholder="输入分类名称"
-            clearable
-            class="w-[180px]!"
-          />
+          <CategorySelect v-model="form.keyword" multiple />
         </el-form-item>
         <el-form-item label="类型：" prop="type">
           <TypeSelect v-model="form.type" />

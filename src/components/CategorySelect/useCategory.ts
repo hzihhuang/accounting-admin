@@ -9,11 +9,13 @@ export const useCategory = () => {
       loading.value = false;
       return;
     } else {
-      const res = await getCategoryList();
+      const res = await getCategoryList({
+        pageSize: 100
+      });
       if (res.data) {
         loading.value = false;
         categoryList.value = res.data.list?.map?.(i => ({
-          label: `${i.name}${i.name === "理财" ? (i.type === "expenses" ? "「支出」" : "「收入」") : ""}`,
+          label: `${i.name}${i.name === "理财" ? (i.type === "expense" ? "「支出」" : "「收入」") : ""}`,
           value: i.id
         }));
       }

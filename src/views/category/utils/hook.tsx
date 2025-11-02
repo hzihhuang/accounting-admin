@@ -137,9 +137,7 @@ export function useTags(tableRef: Ref, form) {
     pagination.pageSize = data.pageSize;
     pagination.currentPage = data.currentPage;
 
-    setTimeout(() => {
-      loading.value = false;
-    }, 500);
+    loading.value = false;
   }
 
   const resetForm = formEl => {

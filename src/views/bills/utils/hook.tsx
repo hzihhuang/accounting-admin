@@ -6,7 +6,13 @@ import { addDialog } from "@/components/ReDialog";
 import type { PaginationProps } from "@pureadmin/table";
 import type { FormItemProps } from "./types";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { addBill, deleteBill, getBillList, updateBill } from "@/api/bills";
+import {
+  addBill,
+  deleteBatchBill,
+  deleteBill,
+  getBillList,
+  updateBill
+} from "@/api/bills";
 import { type Ref, h, ref, reactive, onMounted } from "vue";
 
 export function useBill(tableRef: Ref, form) {
@@ -63,7 +69,8 @@ export function useBill(tableRef: Ref, form) {
     {
       label: "类型",
       prop: "type",
-      formatter: ({ type }) => (type === "expense" ? "支出" : "收入"),
+      formatter: ({ category }) =>
+        category.type === "expense" ? "支出" : "收入",
       minWidth: 130
     },
     {
@@ -134,11 +141,15 @@ export function useBill(tableRef: Ref, form) {
   function onbatchDel() {
     // 返回当前选中的行
     const curSelected = tableRef.value.getTableRef().getSelectionRows();
-    message(`已删除用户ID为 ${getKeyList(curSelected, "id")} 的数据`, {
-      type: "success"
+    deleteBatchBill(getKeyList(curSelected, "id")).then(res => {
+      if (res.success) {
+        message(`已删除用户ID为 ${getKeyList(curSelected, "id")} 的数据`, {
+          type: "success"
+        });
+        tableRef.value.getTableRef().clearSelection();
+        onSearch();
+      }
     });
-    tableRef.value.getTableRef().clearSelection();
-    onSearch();
   }
 
   async function onSearch() {

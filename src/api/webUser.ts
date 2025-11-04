@@ -37,3 +37,10 @@ export const addWebUser = (data: object) => {
 export const deleteWebUser = (id: number) => {
   return http.request<BaseResult>("delete", `/admin/web-user/${id}`);
 };
+
+// 批量删除
+export const deleteWebUserBatch = (ids: number[]) => {
+  return http.request<BaseResult>("post", "/admin/web-user/batch", {
+    data: { ids }
+  });
+};

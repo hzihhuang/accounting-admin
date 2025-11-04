@@ -1,46 +1,61 @@
 <script lang="ts" setup>
 import ReCol from "@/components/ReCol";
 import ChartPie from "./charts/ChartPie.vue";
-import { reactive, ref } from "vue";
+import { reactive, ref, computed, onMounted, onBeforeMount } from "vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import WebUserSelect from "@/components/WebUserSelect/index.vue";
 import dayjs from "dayjs";
-
 import Refresh from "~icons/ep/refresh";
-
+import { getCategoryChartData } from "@/api/charts";
 defineOptions({
   name: "分类占比"
 });
 
-const chartData = [
-  {
-    title: "开支占比",
-    data: [
-      { value: 40, name: "购物" },
-      { value: 38, name: "长辈" },
-      { value: 32, name: "交通" },
-      { value: 30, name: "住房" },
-      { value: 28, name: "餐饮" },
-      { value: 26, name: "旅游" },
-      { value: 22, name: "医疗" },
-      { value: 18, name: "娱乐" }
-    ]
-  },
-  {
-    title: "收入占比",
-    data: [
-      { value: 90, name: "工资" },
-      { value: 38, name: "兼职" },
-      { value: 20, name: "投资" }
-    ]
-  }
-];
-
 const formRef = ref();
 const form = reactive({
+  userId: "",
   date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
 });
-const onSearch = () => {};
-const resetForm = () => {};
+const chartData = ref([]);
+onBeforeMount(() => onSearch());
+
+const onSearch = () => {
+  getCategoryChartData({
+    userId: form.userId,
+    startDate: form?.date?.[0] ? dayjs(form.date[0]).format("YYYY-MM-DD") : "",
+    endDate: form?.date?.[1] ? dayjs(form.date[1]).format("YYYY-MM-DD") : ""
+  }).then(res => {
+    if (res.success) {
+      const expenseData = [];
+      const incomeData = [];
+      res.data.forEach(i => {
+        expenseData.push({
+          name: i.category,
+          value: i.expense
+        });
+        incomeData.push({
+          name: i.category,
+          value: i.income
+        });
+      });
+      chartData.value = [
+        {
+          title: "支出占比",
+          data: expenseData
+        },
+        {
+          title: "收入占比",
+          data: incomeData
+        }
+      ];
+    }
+  });
+};
+const resetForm = formEl => {
+  if (!formEl) return;
+  formEl.resetFields();
+  onSearch();
+};
 </script>
 
 <template>
@@ -51,6 +66,9 @@ const resetForm = () => {};
       :model="form"
       class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
     >
+      <el-form-item label="用户: " prop="userId">
+        <WebUserSelect v-model="form.userId" />
+      </el-form-item>
       <el-form-item label="日期范围: " prop="date">
         <el-date-picker
           v-model="form.date"
@@ -96,7 +114,7 @@ const resetForm = () => {};
         }"
       >
         <el-card class="line-card" shadow="never">
-          <div class="h-120">
+          <div class="h-200">
             <ChartPie :title="item.title" :data="item.data" />
           </div>
         </el-card>

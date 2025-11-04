@@ -22,6 +22,13 @@ export const deleteBill = (id: number) => {
   return http.request<BaseResult>("delete", `/admin/bills/${id}`);
 };
 
+/** 批量删除 */
+export const deleteBatchBill = (ids: Array<number>) => {
+  return http.request<BaseResult>("post", "/admin/bills/batch", {
+    data: { ids }
+  });
+};
+
 /** 新增 */
 export const addBill = (data: object) => {
   return http.request<BaseResult>("post", "/admin/bills", { data });

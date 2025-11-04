@@ -57,7 +57,7 @@ const {
           <CategorySelect v-model="form.keyword" multiple />
         </el-form-item>
         <el-form-item label="类型：" prop="type">
-          <TypeSelect v-model="form.type" />
+          <TypeSelect v-model="form.type" hide-all />
         </el-form-item>
         <el-form-item>
           <el-button

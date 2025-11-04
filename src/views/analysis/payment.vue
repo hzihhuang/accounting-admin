@@ -2,14 +2,16 @@
 import { useDark } from "@pureadmin/utils";
 import ReCol from "@/components/ReCol";
 import ChartBar from "./charts/ChartBar.vue";
-import { reactive, ref } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import dayjs from "dayjs";
+import WebUserSelect from "@/components/WebUserSelect/index.vue";
 
 import Refresh from "~icons/ep/refresh";
 import GroupLine from "~icons/ri/group-line";
 import Bills from "~icons/mingcute/bill-line";
 import { ReNormalCountTo } from "@/components/ReCountTo";
+import { getCategoryChartData } from "@/api/charts";
 
 defineOptions({
   name: "收支统计"
@@ -34,7 +36,7 @@ const chartDataAll = [
     bgColor: "#fff5f4",
     color: "#e85f33",
     duration: 1600,
-    name: "开支总额",
+    name: "支出总额",
     value: 16580,
     percent: "+70%",
     data: [2216, 1148, 1255, 788, 4821, 1973, 4379]
@@ -54,43 +56,69 @@ const chartDataAll = [
     bgColor: "#fff5f4",
     color: "#e85f33",
     duration: 1600,
-    name: "今日开支",
+    name: "今日支出",
     value: 16580,
     percent: "+70%",
     data: [2216, 1148, 1255, 788, 4821, 1973, 4379]
   }
 ];
 
-const chartData = [
-  {
-    title: "开支金额",
-    data: [
-      { value: 40, name: "购物", color: "#5470C6" },
-      { value: 38, name: "长辈", color: "#91CC75" },
-      { value: 32, name: "交通", color: "#EE6666" },
-      { value: 30, name: "住房", color: "#FAC858" },
-      { value: 28, name: "餐饮", color: "#73C0DE" },
-      { value: 26, name: "旅游", color: "#3BA272" },
-      { value: 22, name: "医疗", color: "#FC8452" },
-      { value: 18, name: "娱乐", color: "#9A60B4" }
-    ]
-  },
-  {
-    title: "收入金额",
-    data: [
-      { value: 90, name: "工资", color: "#5470C6" },
-      { value: 38, name: "兼职", color: "#91CC75" },
-      { value: 20, name: "投资", color: "#EE6666" }
-    ]
-  }
-];
-
 const formRef = ref();
 const form = reactive({
+  userId: "",
   date: [dayjs().startOf("month").toDate(), dayjs().endOf("month").toDate()]
 });
-const onSearch = () => {};
-const resetForm = () => {};
+const chartData = ref([]);
+onBeforeMount(() => onSearch());
+function generateHarmoniousColor(
+  index,
+  total,
+  saturation = 70,
+  lightness = 60
+) {
+  // 基于色相环均匀分布颜色
+  const hue = ((index * 360) / total) % 360;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+const onSearch = () => {
+  getCategoryChartData({
+    userId: form.userId,
+    startDate: form?.date?.[0] ? dayjs(form.date[0]).format("YYYY-MM-DD") : "",
+    endDate: form?.date?.[1] ? dayjs(form.date[1]).format("YYYY-MM-DD") : ""
+  }).then(res => {
+    if (res.success) {
+      const expenseData = [];
+      const incomeData = [];
+      res.data.forEach((i, index, array) => {
+        expenseData.push({
+          name: i.category,
+          value: i.expense,
+          color: generateHarmoniousColor(index, array.length)
+        });
+        incomeData.push({
+          name: i.category,
+          value: i.income,
+          color: generateHarmoniousColor(index, array.length)
+        });
+      });
+      chartData.value = [
+        {
+          title: "支出金额",
+          data: expenseData
+        },
+        {
+          title: "收入金额",
+          data: incomeData
+        }
+      ];
+    }
+  });
+};
+const resetForm = formEl => {
+  if (!formEl) return;
+  formEl.resetFields();
+  onSearch();
+};
 </script>
 
 <template>
@@ -101,6 +129,9 @@ const resetForm = () => {};
       :model="form"
       class="search-form bg-bg_color w-full pl-8 pt-[12px] overflow-auto"
     >
+      <el-form-item label="用户: " prop="userId">
+        <WebUserSelect v-model="form.userId" />
+      </el-form-item>
       <el-form-item label="日期范围: " prop="date">
         <el-date-picker
           v-model="form.date"
@@ -124,7 +155,7 @@ const resetForm = () => {};
       </el-form-item>
     </el-form>
     <el-row class="mt-4" :gutter="24" justify="space-around">
-      <re-col
+      <!-- <re-col
         v-for="(item, index) in chartDataAll"
         :key="index"
         v-motion
@@ -177,7 +208,7 @@ const resetForm = () => {};
             <ChartLine class="w-1/2!" :color="item.color" :data="item.data" />
           </div>
         </el-card>
-      </re-col>
+      </re-col> -->
       <re-col
         v-for="(item, index) in chartData"
         :key="index"

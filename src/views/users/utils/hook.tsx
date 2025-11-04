@@ -19,7 +19,12 @@ import {
   ElMessageBox
 } from "element-plus";
 import { type Ref, h, ref, watch, reactive, onMounted, computed } from "vue";
-import { addWebUser, deleteWebUser, updateWebUserStatus } from "@/api/webUser";
+import {
+  addWebUser,
+  deleteWebUser,
+  deleteWebUserBatch,
+  updateWebUserStatus
+} from "@/api/webUser";
 
 export function useUser(tableRef: Ref) {
   const form = reactive({
@@ -216,12 +221,16 @@ export function useUser(tableRef: Ref) {
   function onbatchDel() {
     // 返回当前选中的行
     const curSelected = tableRef.value.getTableRef().getSelectionRows();
-    // 接下来根据实际业务，通过选中行的某项数据，比如下面的id，调用接口进行批量删除
-    message(`已删除用户ID为 ${getKeyList(curSelected, "id")} 的数据`, {
-      type: "success"
+    const ids = getKeyList(curSelected, "id");
+    deleteWebUserBatch(ids).then(res => {
+      if (res.success) {
+        message(`已删除用户ID为 ${ids} 的数据`, {
+          type: "success"
+        });
+        tableRef.value.getTableRef().clearSelection();
+        onSearch();
+      }
     });
-    tableRef.value.getTableRef().clearSelection();
-    onSearch();
   }
 
   function handleUpdate(row) {
